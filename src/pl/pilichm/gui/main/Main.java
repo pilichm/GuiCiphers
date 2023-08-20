@@ -42,7 +42,7 @@ public class Main {
         listOfCiphersPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
         cipherInputOutputPanel = new JPanel();
-        cipherInputOutputPanel.setLayout(new BoxLayout(cipherInputOutputPanel, BoxLayout.X_AXIS));
+        cipherInputOutputPanel.setLayout(new BoxLayout(cipherInputOutputPanel, BoxLayout.Y_AXIS));
         cipherInputOutputPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
         frame.setLayout(new GridLayout(0, 1));
@@ -58,6 +58,7 @@ public class Main {
     private void refresh(){
         frame.invalidate();
         frame.validate();
+        frame.pack();
         frame.repaint();
     }
 
@@ -69,6 +70,8 @@ public class Main {
         JButton btnCaesar = new JButton("Caesar");
         JButton btnHill = new JButton("Hill");
         JButton btnRot13 = new JButton("ROT13");
+
+        btnCaesar.addActionListener(e -> {displayCaesarCipher();});
 
         listOfCiphersPanel.removeAll();
         listOfCiphersPanel.add(btnAffine);
@@ -108,4 +111,28 @@ public class Main {
         refresh();
     }
 
+    private void displayCaesarCipher(){
+        System.out.println("Caesar cipher.");
+
+        JTextField txtTextIn = new JTextField("Text for processing");
+        JLabel lblResult = new JLabel("Result: ");
+
+        JCheckBox encryption = new JCheckBox("Encryption");
+        JCheckBox decryption = new JCheckBox("Decryption");
+
+        encryption.addItemListener(e -> decryption.setSelected(!encryption.isSelected()));
+        decryption.addItemListener(e -> encryption.setSelected(!decryption.isSelected()));
+
+        JButton btnRunCipher = new JButton("run");
+
+        cipherInputOutputPanel.removeAll();
+
+        cipherInputOutputPanel.add(txtTextIn);
+        cipherInputOutputPanel.add(lblResult);
+        cipherInputOutputPanel.add(encryption);
+        cipherInputOutputPanel.add(decryption);
+        cipherInputOutputPanel.add(btnRunCipher);
+
+        refresh();
+    }
 }
