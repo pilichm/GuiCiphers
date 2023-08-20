@@ -1,38 +1,68 @@
 package pl.pilichm.gui.main;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Main {
+    private JPanel listOfCiphersPanel;
+
+    private JPanel cipherInputOutputPanel;
+    private JFrame frame;
+
     public static void main(String[] args) {
         System.out.println("main() - start.");
 
-        JFrame frame = new JFrame("Classical cryptography");
+        new Main().run();
 
-        /*
-        Buttons for selecting type of cipher.
-         */
+        System.out.println("main() - end.");
+    }
+
+    public void run(){
+        frame = new JFrame("Classical cryptography");
 
         JPanel typeOfCipherPanel = new JPanel();
-        BoxLayout boxlayoutTypeOfCipher = new BoxLayout(typeOfCipherPanel, BoxLayout.X_AXIS);
-        typeOfCipherPanel.setLayout(boxlayoutTypeOfCipher);
+        typeOfCipherPanel.setLayout(new BoxLayout(typeOfCipherPanel, BoxLayout.X_AXIS));
         typeOfCipherPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
         JButton btnSquareCiphers = new JButton("Square ciphers");
         JButton btnSubstitutionCiphers = new JButton("Substitution ciphers");
         JButton btnTranspositionCiphers = new JButton("Transposition ciphers");
 
+        btnSubstitutionCiphers.addActionListener(e -> displaySubstitutionCiphers());
+        btnTranspositionCiphers.addActionListener(e -> displayTranspositionCiphers());
+        btnSquareCiphers.addActionListener(e -> displayTSquareCiphers());
+
         typeOfCipherPanel.add(btnSubstitutionCiphers);
         typeOfCipherPanel.add(btnTranspositionCiphers);
         typeOfCipherPanel.add(btnSquareCiphers);
 
-        /*
-         * Buttons for substitution ciphers.
-         */
-        JPanel substitutionPanel = new JPanel();
-        BoxLayout boxlayoutSubstitutionBtn = new BoxLayout(substitutionPanel, BoxLayout.X_AXIS);
-        substitutionPanel.setLayout(boxlayoutSubstitutionBtn);
-        substitutionPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+        listOfCiphersPanel = new JPanel();
+        listOfCiphersPanel.setLayout(new BoxLayout(listOfCiphersPanel, BoxLayout.X_AXIS));
+        listOfCiphersPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        cipherInputOutputPanel = new JPanel();
+        cipherInputOutputPanel.setLayout(new BoxLayout(cipherInputOutputPanel, BoxLayout.X_AXIS));
+        cipherInputOutputPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        frame.setLayout(new GridLayout(0, 1));
+        frame.add(typeOfCipherPanel);
+        frame.add(listOfCiphersPanel);
+        frame.add(cipherInputOutputPanel);
+
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+    private void refresh(){
+        frame.invalidate();
+        frame.validate();
+        frame.repaint();
+    }
+
+    private void displaySubstitutionCiphers(){
+        System.out.println("Substitution ciphers.");
 
         JButton btnAffine = new JButton("Affine");
         JButton btnAutoKey = new JButton("Auto key");
@@ -40,20 +70,42 @@ public class Main {
         JButton btnHill = new JButton("Hill");
         JButton btnRot13 = new JButton("ROT13");
 
-        substitutionPanel.add(btnAffine);
-        substitutionPanel.add(btnAutoKey);
-        substitutionPanel.add(btnCaesar);
-        substitutionPanel.add(btnHill);
-        substitutionPanel.add(btnRot13);
+        listOfCiphersPanel.removeAll();
+        listOfCiphersPanel.add(btnAffine);
+        listOfCiphersPanel.add(btnAutoKey);
+        listOfCiphersPanel.add(btnCaesar);
+        listOfCiphersPanel.add(btnHill);
+        listOfCiphersPanel.add(btnRot13);
 
-        frame.setLayout(new GridLayout(0, 1));
-        frame.add(typeOfCipherPanel);
-        frame.add(substitutionPanel);
-        frame.pack();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        refresh();
+    }
 
-        System.out.println("main() - end.");
+    private void displayTranspositionCiphers(){
+        System.out.println("Transposition ciphers.");
+
+        JButton btnColumnarTranspositionCipher = new JButton("Columnar transposition");
+        JButton btnRailFenceCipher = new JButton("Rail fence");
+
+        listOfCiphersPanel.removeAll();
+        listOfCiphersPanel.add(btnColumnarTranspositionCipher);
+        listOfCiphersPanel.add(btnRailFenceCipher);
+
+        refresh();
+    }
+
+    private void displayTSquareCiphers(){
+        System.out.println("Square ciphers.");
+
+        JButton btnPlayfairCipher = new JButton("Playfair");
+        JButton btnTwoSquareCipher = new JButton("Two square");
+        JButton btnFourSquareCipher = new JButton("Four square");
+
+        listOfCiphersPanel.removeAll();
+        listOfCiphersPanel.add(btnPlayfairCipher);
+        listOfCiphersPanel.add(btnTwoSquareCipher);
+        listOfCiphersPanel.add(btnFourSquareCipher);
+
+        refresh();
     }
 
 }
