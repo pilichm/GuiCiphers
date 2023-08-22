@@ -1,5 +1,7 @@
 package pl.pilichm.gui.main;
 
+import pl.pilichm.ciphers.substitution.CaesarCipher;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -113,25 +115,70 @@ public class Main {
 
     private void displayCaesarCipher(){
         System.out.println("Caesar cipher.");
+        CaesarCipher cc = new CaesarCipher();
 
         JTextField txtTextIn = new JTextField("Text for processing");
+        JTextField offsetIn = new JTextField("1");
         JLabel lblResult = new JLabel("Result: ");
-
+        JLabel labelOffset = new JLabel("Offset: ");
         JCheckBox encryption = new JCheckBox("Encryption");
         JCheckBox decryption = new JCheckBox("Decryption");
+        JButton btnRunCipher = new JButton("run");
+
+        offsetIn.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+        txtTextIn.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+        lblResult.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        encryption.setSelected(true);
+
+        JPanel panelEncryptionDecryption = new JPanel();
+        panelEncryptionDecryption.setLayout(new BoxLayout(panelEncryptionDecryption, BoxLayout.X_AXIS));
+        panelEncryptionDecryption.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        JPanel panelOffset = new JPanel();
+        panelOffset.setLayout(new BoxLayout(panelOffset, BoxLayout.X_AXIS));
+        panelOffset.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        panelEncryptionDecryption.add(encryption);
+        panelEncryptionDecryption.add(decryption);
+        panelOffset.add(labelOffset);
+        panelOffset.add(offsetIn);
 
         encryption.addItemListener(e -> decryption.setSelected(!encryption.isSelected()));
         decryption.addItemListener(e -> encryption.setSelected(!decryption.isSelected()));
-
-        JButton btnRunCipher = new JButton("run");
 
         cipherInputOutputPanel.removeAll();
 
         cipherInputOutputPanel.add(txtTextIn);
         cipherInputOutputPanel.add(lblResult);
-        cipherInputOutputPanel.add(encryption);
-        cipherInputOutputPanel.add(decryption);
+        cipherInputOutputPanel.add(panelEncryptionDecryption);
+        cipherInputOutputPanel.add(panelOffset);
         cipherInputOutputPanel.add(btnRunCipher);
+
+        btnRunCipher.addActionListener(e -> {
+            String textToProcess = txtTextIn.getText();
+            int currentOffset = 1;
+
+            try {
+                currentOffset = Integer.parseInt(offsetIn.getText());
+            } catch (Exception exc){
+                System.out.println("Invalid offset value!");
+                offsetIn.setForeground(Color.RED);
+                labelOffset.setForeground(Color.RED);
+                return;
+            }
+
+            String result;
+            cc.setOffset(currentOffset);
+
+            if (encryption.isSelected()){
+                result = cc.encode(textToProcess);
+            } else {
+                result = cc.decode(textToProcess);
+            }
+
+            lblResult.setText("Result: " + result);
+        });
 
         refresh();
     }
