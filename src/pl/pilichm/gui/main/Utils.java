@@ -1,28 +1,27 @@
 package pl.pilichm.gui.main;
 
+import pl.pilichm.ciphers.AbstractCipher;
 import pl.pilichm.ciphers.substitution.CaesarCipher;
+import pl.pilichm.ciphers.substitution.ROT13Cipher;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Utils {
-    public static JPanel [] getPanelsForCaesar(){
-        JPanel [] panels = new JPanel[4];
 
-        CaesarCipher cc = new CaesarCipher();
+    private static JPanel [] getPanelsCommonForCaesarAndROT13(){
+        JPanel [] panels = new JPanel[2];
 
         JTextField txtTextIn = new JTextField("Text for processing");
-        JTextField offsetIn = new JTextField("1");
+
         JLabel lblResult = new JLabel("Result: ");
-        JLabel labelOffset = new JLabel("Offset: ");
-        JButton btnRunCipher = new JButton("run");
+
 
         JCheckBox encryption = new JCheckBox("Encryption");
         JCheckBox decryption = new JCheckBox("Decryption");
         encryption.setSelected(true);
 
-        offsetIn.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
         txtTextIn.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
         lblResult.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
@@ -30,19 +29,9 @@ public class Utils {
         panelEncryptionDecryption.setLayout(new BoxLayout(panelEncryptionDecryption, BoxLayout.X_AXIS));
         panelEncryptionDecryption.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
-        JPanel panelOffset = new JPanel();
-        panelOffset.setLayout(new BoxLayout(panelOffset, BoxLayout.X_AXIS));
-        panelOffset.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
-
         JPanel panelTextInOut = new JPanel();
         panelTextInOut.setLayout(new BoxLayout(panelTextInOut, BoxLayout.X_AXIS));
         panelTextInOut.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
-
-        JPanel panelButton = new JPanel();
-        panelButton.setLayout(new BoxLayout(panelButton, BoxLayout.X_AXIS));
-        panelButton.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
-
-        panelButton.add(btnRunCipher);
 
         panelEncryptionDecryption.add(encryption);
         panelEncryptionDecryption.add(decryption);
@@ -50,15 +39,48 @@ public class Utils {
         encryption.addItemListener(e -> decryption.setSelected(!encryption.isSelected()));
         decryption.addItemListener(e -> encryption.setSelected(!decryption.isSelected()));
 
-        panelOffset.add(labelOffset);
-        panelOffset.add(offsetIn);
-
         panelTextInOut.add(txtTextIn);
         panelTextInOut.add(lblResult);
 
+        panels[0] = panelTextInOut;
+        panels[1] = panelEncryptionDecryption;
+
+        return panels;
+    }
+
+    public static JPanel [] getPanelsForCaesar(){
+        JPanel [] panels = new JPanel[4];
+
+        CaesarCipher cc = new CaesarCipher();
+
+        JTextField offsetIn = new JTextField("1");
+        JLabel labelOffset = new JLabel("Offset: ");
+        JButton btnRunCipher = new JButton("run");
+
+        offsetIn.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        JPanel panelOffset = new JPanel();
+        panelOffset.setLayout(new BoxLayout(panelOffset, BoxLayout.X_AXIS));
+        panelOffset.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        JPanel panelButton = new JPanel();
+        panelButton.setLayout(new BoxLayout(panelButton, BoxLayout.X_AXIS));
+        panelButton.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        panelButton.add(btnRunCipher);
+
+        panelOffset.add(labelOffset);
+        panelOffset.add(offsetIn);
+
+        JPanel [] commonPanels = getPanelsCommonForCaesarAndROT13();
+
+        JCheckBox encryption = (JCheckBox) commonPanels[1].getComponent(0);
+        JTextField txtTextIn = (JTextField) commonPanels[0].getComponent(0);
+        JLabel lblResult = (JLabel) commonPanels[0].getComponent(1);
+
         btnRunCipher.addActionListener(e -> {
             String textToProcess = txtTextIn.getText();
-            int currentOffset = 1;
+            int currentOffset;
 
             try {
                 currentOffset = Integer.parseInt(offsetIn.getText());
@@ -82,10 +104,49 @@ public class Utils {
             lblResult.setText("Result: " + result);
         });
 
-        panels[0] = panelTextInOut;
-        panels[1] = panelEncryptionDecryption;
+        panels[0] = commonPanels[0];
+        panels[1] = commonPanels[1];
         panels[2] = panelOffset;
         panels[3] = panelButton;
+
+        return panels;
+    }
+
+    public static JPanel [] getPanelsForROT13() {
+        JPanel [] panels = new JPanel[3];
+
+        ROT13Cipher rot13 = new ROT13Cipher();
+
+        JButton btnRunCipher = new JButton("run");
+
+        JPanel panelButton = new JPanel();
+        panelButton.setLayout(new BoxLayout(panelButton, BoxLayout.X_AXIS));
+        panelButton.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        panelButton.add(btnRunCipher);
+
+        JPanel [] commonPanels = getPanelsCommonForCaesarAndROT13();
+
+        JCheckBox encryption = (JCheckBox) commonPanels[1].getComponent(0);
+        JTextField txtTextIn = (JTextField) commonPanels[0].getComponent(0);
+        JLabel lblResult = (JLabel) commonPanels[0].getComponent(1);
+
+        btnRunCipher.addActionListener(e -> {
+            String textToProcess = txtTextIn.getText();
+            String result;
+
+            if (encryption.isSelected()){
+                result = rot13.encode(textToProcess);
+            } else {
+                result = rot13.decode(textToProcess);
+            }
+
+            lblResult.setText("Result: " + result);
+        });
+
+        panels[0] = commonPanels[0];
+        panels[1] = commonPanels[1];
+        panels[2] = panelButton;
 
         return panels;
     }

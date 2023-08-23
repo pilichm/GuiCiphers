@@ -1,7 +1,5 @@
 package pl.pilichm.gui.main;
 
-import pl.pilichm.ciphers.substitution.CaesarCipher;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -73,7 +71,8 @@ public class Main {
         JButton btnHill = new JButton("Hill");
         JButton btnRot13 = new JButton("ROT13");
 
-        btnCaesar.addActionListener(e -> {displayCaesarCipher();});
+        btnCaesar.addActionListener(e -> displayCaesarCipher());
+        btnRot13.addActionListener(e -> displayROT13Cipher());
 
         listOfCiphersPanel.removeAll();
         listOfCiphersPanel.add(btnAffine);
@@ -117,6 +116,20 @@ public class Main {
         System.out.println("Caesar cipher.");
 
         JPanel [] panels = Utils.getPanelsForCaesar();
+
+        cipherInputOutputPanel.removeAll();
+
+        for (JPanel panel : panels){
+            cipherInputOutputPanel.add(panel);
+        }
+
+        refresh();
+    }
+
+    private void displayROT13Cipher(){
+        System.out.println("Caesar ROT13 cipher.");
+
+        JPanel [] panels = Utils.getPanelsForROT13();
 
         cipherInputOutputPanel.removeAll();
 
