@@ -73,6 +73,7 @@ public class Main {
 
         btnCaesar.addActionListener(e -> displayCaesarCipher());
         btnRot13.addActionListener(e -> displayROT13Cipher());
+        btnAutoKey.addActionListener(e -> displayAutoKeyCipher());
 
         listOfCiphersPanel.removeAll();
         listOfCiphersPanel.add(btnAffine);
@@ -130,6 +131,20 @@ public class Main {
         System.out.println("Caesar ROT13 cipher.");
 
         JPanel [] panels = Utils.getPanelsForROT13();
+
+        cipherInputOutputPanel.removeAll();
+
+        for (JPanel panel : panels){
+            cipherInputOutputPanel.add(panel);
+        }
+
+        refresh();
+    }
+
+    private void displayAutoKeyCipher(){
+        System.out.println("Caesar Auto key cipher.");
+
+        JPanel [] panels = Utils.getPanelsForAutoKey();
 
         cipherInputOutputPanel.removeAll();
 
