@@ -1,6 +1,6 @@
 package pl.pilichm.gui.main;
 
-import pl.pilichm.ciphers.AbstractCipher;
+import pl.pilichm.ciphers.substitution.AffineCipher;
 import pl.pilichm.ciphers.substitution.AutoKeyCipher;
 import pl.pilichm.ciphers.substitution.CaesarCipher;
 import pl.pilichm.ciphers.substitution.ROT13Cipher;
@@ -218,6 +218,79 @@ public class Utils {
         panels[1] = commonPanels[1];
         panels[2] = panelKey;
         panels[3] = panelButton;
+
+        return panels;
+    }
+
+    public static JPanel [] getPanelsForAffine(){
+        JPanel [] panels = new JPanel[5];
+        JPanel [] commonPanels = getPanelsCommonForCaesarAndROT13();
+
+        AffineCipher ac = new AffineCipher();
+
+        JCheckBox encryption = (JCheckBox) commonPanels[1].getComponent(0);
+        JTextField txtTextIn = (JTextField) commonPanels[0].getComponent(0);
+        JLabel lblResult = (JLabel) commonPanels[0].getComponent(1);
+
+        JPanel parameterA = getPanelForKey("Parameter a: ", "5");
+        JPanel parameterB = getPanelForKey("Parameter b: ", "8");
+
+        JTextField paramaterAValue = (JTextField) parameterA.getComponent(1);
+        JLabel parameterALabel = (JLabel) parameterA.getComponent(0);
+
+        JTextField paramaterBValue = (JTextField) parameterB.getComponent(1);
+        JLabel parameterBLabel = (JLabel) parameterB.getComponent(0);
+
+        JButton btnRunCipher = new JButton("run");
+
+        JPanel panelButton = new JPanel();
+        panelButton.setLayout(new BoxLayout(panelButton, BoxLayout.X_AXIS));
+        panelButton.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        panelButton.add(btnRunCipher);
+
+        btnRunCipher.addActionListener(e -> {
+            String textToProcess = txtTextIn.getText();
+            int paramA = 5;
+            int paramB = 8;
+
+            try {
+                paramA = Integer.parseInt(paramaterAValue.getText());
+            } catch (Exception exc){
+                System.out.println("Invalid offset value!");
+                parameterALabel.setForeground(Color.RED);
+                paramaterAValue.setForeground(Color.RED);
+                return;
+            }
+
+            try {
+                paramB = Integer.parseInt(paramaterBValue.getText());
+            } catch (Exception exc){
+                System.out.println("Invalid offset value!");
+                parameterBLabel.setForeground(Color.RED);
+                paramaterBValue.setForeground(Color.RED);
+                return;
+            }
+
+            String result;
+
+            ac.setParameter_a(paramA);
+            ac.setParameter_b(paramB);
+
+            if (encryption.isSelected()){
+                result = ac.encode(textToProcess);
+            } else {
+                result = ac.decode(textToProcess);
+            }
+
+            lblResult.setText("Result: " + result);
+        });
+
+        panels[0] = commonPanels[0];
+        panels[1] = commonPanels[1];
+        panels[2] = parameterA;
+        panels[3] = parameterB;
+        panels[4] = panelButton;
 
         return panels;
     }
