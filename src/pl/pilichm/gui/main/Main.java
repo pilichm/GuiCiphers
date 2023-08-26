@@ -75,6 +75,7 @@ public class Main {
         btnRot13.addActionListener(e -> displayROT13Cipher());
         btnAutoKey.addActionListener(e -> displayAutoKeyCipher());
         btnAffine.addActionListener(e -> displayAffine());
+        btnHill.addActionListener(e -> displayHill());
 
         listOfCiphersPanel.removeAll();
         listOfCiphersPanel.add(btnAffine);
@@ -169,4 +170,19 @@ public class Main {
 
         refresh();
     }
+
+    private void displayHill(){
+        System.out.println("Hill cipher.");
+
+        JPanel [] panels = Utils.getPanelsForHill();
+
+        cipherInputOutputPanel.removeAll();
+
+        for (JPanel panel : panels){
+            cipherInputOutputPanel.add(panel);
+        }
+
+        refresh();
+    }
+
 }

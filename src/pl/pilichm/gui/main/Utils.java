@@ -1,15 +1,24 @@
 package pl.pilichm.gui.main;
 
-import pl.pilichm.ciphers.substitution.AffineCipher;
-import pl.pilichm.ciphers.substitution.AutoKeyCipher;
-import pl.pilichm.ciphers.substitution.CaesarCipher;
-import pl.pilichm.ciphers.substitution.ROT13Cipher;
+import pl.pilichm.ciphers.substitution.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.Arrays;
 
 public class Utils {
+
+    private static int getIntValueFromTextFiled(JTextField textField, int defaultValue){
+        try {
+            return Integer.parseInt(textField.getText());
+        } catch (Exception exc){
+            System.out.println("Invalid offset value!");
+            textField.setForeground(Color.RED);
+            textField.setForeground(Color.RED);
+            return defaultValue;
+        }
+    }
 
     private static JPanel [] getPanelsCommonForCaesarAndROT13(){
         JPanel [] panels = new JPanel[2];
@@ -94,19 +103,9 @@ public class Utils {
 
         btnRunCipher.addActionListener(e -> {
             String textToProcess = txtTextIn.getText();
-            int currentOffset;
-
-            try {
-                currentOffset = Integer.parseInt(offsetIn.getText());
-            } catch (Exception exc){
-                System.out.println("Invalid offset value!");
-                offsetIn.setForeground(Color.RED);
-                labelOffset.setForeground(Color.RED);
-                return;
-            }
 
             String result;
-            cc.setOffset(currentOffset);
+            cc.setOffset(getIntValueFromTextFiled(offsetIn, 1));
 
 
             if (encryption.isSelected()){
@@ -236,10 +235,7 @@ public class Utils {
         JPanel parameterB = getPanelForKey("Parameter b: ", "8");
 
         JTextField paramaterAValue = (JTextField) parameterA.getComponent(1);
-        JLabel parameterALabel = (JLabel) parameterA.getComponent(0);
-
         JTextField paramaterBValue = (JTextField) parameterB.getComponent(1);
-        JLabel parameterBLabel = (JLabel) parameterB.getComponent(0);
 
         JButton btnRunCipher = new JButton("run");
 
@@ -251,31 +247,10 @@ public class Utils {
 
         btnRunCipher.addActionListener(e -> {
             String textToProcess = txtTextIn.getText();
-            int paramA = 5;
-            int paramB = 8;
-
-            try {
-                paramA = Integer.parseInt(paramaterAValue.getText());
-            } catch (Exception exc){
-                System.out.println("Invalid offset value!");
-                parameterALabel.setForeground(Color.RED);
-                paramaterAValue.setForeground(Color.RED);
-                return;
-            }
-
-            try {
-                paramB = Integer.parseInt(paramaterBValue.getText());
-            } catch (Exception exc){
-                System.out.println("Invalid offset value!");
-                parameterBLabel.setForeground(Color.RED);
-                paramaterBValue.setForeground(Color.RED);
-                return;
-            }
-
             String result;
 
-            ac.setParameter_a(paramA);
-            ac.setParameter_b(paramB);
+            ac.setParameter_a(getIntValueFromTextFiled(paramaterAValue, 5));
+            ac.setParameter_b(getIntValueFromTextFiled(paramaterBValue, 8));
 
             if (encryption.isSelected()){
                 result = ac.encode(textToProcess);
@@ -291,6 +266,74 @@ public class Utils {
         panels[2] = parameterA;
         panels[3] = parameterB;
         panels[4] = panelButton;
+
+        return panels;
+    }
+
+    public static JPanel [] getPanelsForHill(){
+        JPanel [] panels = new JPanel[4];
+        JPanel [] commonPanels = getPanelsCommonForCaesarAndROT13();
+
+        HillCipher hc = new HillCipher();
+
+        JCheckBox encryption = (JCheckBox) commonPanels[1].getComponent(0);
+        JTextField txtTextIn = (JTextField) commonPanels[0].getComponent(0);
+        JLabel lblResult = (JLabel) commonPanels[0].getComponent(1);
+
+        JButton btnRunCipher = new JButton("run");
+
+        JPanel panelButton = new JPanel();
+        panelButton.setLayout(new BoxLayout(panelButton, BoxLayout.X_AXIS));
+        panelButton.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+
+        JPanel keyMatrixPanel = new JPanel();
+        keyMatrixPanel.setLayout(new GridLayout(0, 3));
+
+        for (int value : Arrays.asList(6, 24, 1, 13, 16, 10, 20, 17, 15)){
+            JTextField matrixCell = new JTextField(String.valueOf(value));
+            keyMatrixPanel.add(matrixCell);
+        }
+
+        JLabel keyLabel = new JLabel("Key: ");
+
+        JPanel keyPanel = new JPanel();
+        keyPanel.setLayout(new BoxLayout(keyPanel, BoxLayout.X_AXIS));
+        keyPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+        keyPanel.add(keyLabel);
+        keyPanel.add(keyMatrixPanel);
+
+        panelButton.add(btnRunCipher);
+
+        btnRunCipher.addActionListener(e -> {
+            String textToProcess = txtTextIn.getText();
+            String result;
+
+            double [][] key = {
+                    new double[]{6, 24, 1},
+                    new double[]{13, 16, 10},
+                    new double[]{20, 17, 15}
+            };
+
+            for (int index=0; index<9; index++){
+                JTextField cell = (JTextField) keyMatrixPanel.getComponent(index);
+                key[index/3][index%3] = Integer.parseInt(cell.getText());
+            }
+
+            hc.setKey(key);
+
+            if (encryption.isSelected()){
+                result = hc.encode(textToProcess);
+            } else {
+                result = hc.decode(textToProcess);
+            }
+
+            lblResult.setText("Result: " + result);
+        });
+
+        panels[0] = commonPanels[0];
+        panels[1] = commonPanels[1];
+        panels[2] = keyPanel;
+        panels[3] = panelButton;
 
         return panels;
     }
