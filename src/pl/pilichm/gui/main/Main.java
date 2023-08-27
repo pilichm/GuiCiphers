@@ -45,7 +45,7 @@ public class Main {
         cipherInputOutputPanel.setLayout(new BoxLayout(cipherInputOutputPanel, BoxLayout.Y_AXIS));
         cipherInputOutputPanel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
 
-        frame.setLayout(new GridLayout(0, 1));
+        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
         frame.add(typeOfCipherPanel);
         frame.add(listOfCiphersPanel);
         frame.add(cipherInputOutputPanel);
