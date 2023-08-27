@@ -93,6 +93,8 @@ public class Main {
         JButton btnColumnarTranspositionCipher = new JButton("Columnar transposition");
         JButton btnRailFenceCipher = new JButton("Rail fence");
 
+        btnColumnarTranspositionCipher.addActionListener(e -> displayColumnarTransposition());
+
         listOfCiphersPanel.removeAll();
         listOfCiphersPanel.add(btnColumnarTranspositionCipher);
         listOfCiphersPanel.add(btnRailFenceCipher);
@@ -175,6 +177,20 @@ public class Main {
         System.out.println("Hill cipher.");
 
         JPanel [] panels = Utils.getPanelsForHill();
+
+        cipherInputOutputPanel.removeAll();
+
+        for (JPanel panel : panels){
+            cipherInputOutputPanel.add(panel);
+        }
+
+        refresh();
+    }
+
+    private void displayColumnarTransposition(){
+        System.out.println("Columnar transposition cipher.");
+
+        JPanel [] panels = Utils.getPanelsForColumnarTransposition();
 
         cipherInputOutputPanel.removeAll();
 

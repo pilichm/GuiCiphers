@@ -1,6 +1,7 @@
 package pl.pilichm.gui.main;
 
 import pl.pilichm.ciphers.substitution.*;
+import pl.pilichm.ciphers.transposition.ColumnarTranspositionCipher;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -333,6 +334,47 @@ public class Utils {
         panels[0] = commonPanels[0];
         panels[1] = commonPanels[1];
         panels[2] = keyPanel;
+        panels[3] = panelButton;
+
+        return panels;
+    }
+
+    public static JPanel [] getPanelsForColumnarTransposition() {
+        JPanel [] panels = new JPanel[4];
+        ColumnarTranspositionCipher ctc = new ColumnarTranspositionCipher();
+        JPanel [] commonPanels = getPanelsCommonForCaesarAndROT13();
+
+        JPanel panelKey = getPanelForKey("Key: ", "ZEBRAS");
+        JTextField keyIn = (JTextField) panelKey.getComponent(1);
+        JCheckBox encryption = (JCheckBox) commonPanels[1].getComponent(0);
+        JTextField txtTextIn = (JTextField) commonPanels[0].getComponent(0);
+        JLabel lblResult = (JLabel) commonPanels[0].getComponent(1);
+
+        JButton btnRunCipher = new JButton("run");
+
+        JPanel panelButton = new JPanel();
+        panelButton.setLayout(new BoxLayout(panelButton, BoxLayout.X_AXIS));
+        panelButton.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+        panelButton.add(btnRunCipher);
+
+        btnRunCipher.addActionListener(e -> {
+            String textToProcess = txtTextIn.getText();
+            String result;
+
+            ctc.setKey(keyIn.getText());
+
+            if (encryption.isSelected()){
+                result = ctc.encode(textToProcess);
+            } else {
+                result = ctc.decode(textToProcess);
+            }
+
+            lblResult.setText("Result: " + result);
+        });
+
+        panels[0] = commonPanels[0];
+        panels[1] = commonPanels[1];
+        panels[2] = panelKey;
         panels[3] = panelButton;
 
         return panels;
