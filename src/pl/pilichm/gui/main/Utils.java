@@ -1,5 +1,6 @@
 package pl.pilichm.gui.main;
 
+import pl.pilichm.ciphers.square.PlayfairCipher;
 import pl.pilichm.ciphers.substitution.*;
 import pl.pilichm.ciphers.transposition.ColumnarTranspositionCipher;
 import pl.pilichm.ciphers.transposition.RailFenceCipher;
@@ -7,7 +8,9 @@ import pl.pilichm.ciphers.transposition.RailFenceCipher;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Utils {
 
@@ -420,4 +423,89 @@ public class Utils {
 
         return panels;
     }
+
+    public static Character [][] getKeyFromString(String str){
+        Character [][] key = {
+                new Character[5],
+                new Character[5],
+                new Character[5],
+                new Character[5],
+                new Character[5]
+        };
+        ArrayList<Character> usedLetters = new ArrayList<>();
+        ArrayList<Character> allLetters = new ArrayList<Character>(
+                Arrays.asList('A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'));
+
+        str = str.toUpperCase();
+        str = str.replace(" ", "");
+        if (str.length()>25){
+            str = str.substring(0, 24);
+        }
+
+        // Add unique letters from keyword.
+        for (int index=0; index<str.length(); index++){
+            if (!usedLetters.contains(str.charAt(index))){
+                usedLetters.add(str.charAt(index));
+            }
+        }
+
+        // Add remaining letters from alphabet. I and J are treated as the same letter.
+        for (Character letter: allLetters){
+            if (!usedLetters.contains(letter)){
+                usedLetters.add(letter);
+            }
+        }
+
+        int index = 0;
+        for (int rowIdx=0; rowIdx<5; rowIdx++){
+            for (int colIdx=0; colIdx<5; colIdx++){
+                key[rowIdx][colIdx] = usedLetters.get(index);
+                index++;
+            }
+        }
+
+        return key;
+    }
+
+    public static JPanel [] getPanelsForPlayfair() {
+        JPanel [] panels = new JPanel[4];
+        PlayfairCipher pc = new PlayfairCipher();
+        JPanel [] commonPanels = getPanelsCommonForCaesarAndROT13();
+
+        JPanel panelKey = getPanelForKey("Key: ", "Playfair");
+        JTextField keyIn = (JTextField) panelKey.getComponent(1);
+        JCheckBox encryption = (JCheckBox) commonPanels[1].getComponent(0);
+        JTextField txtTextIn = (JTextField) commonPanels[0].getComponent(0);
+        JLabel lblResult = (JLabel) commonPanels[0].getComponent(1);
+
+        JButton btnRunCipher = new JButton("run");
+
+        JPanel panelButton = new JPanel();
+        panelButton.setLayout(new BoxLayout(panelButton, BoxLayout.X_AXIS));
+        panelButton.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
+        panelButton.add(btnRunCipher);
+
+        btnRunCipher.addActionListener(e -> {
+            String textToProcess = txtTextIn.getText();
+            String result;
+
+            //pc.setKey(keyIn.getText());
+
+            if (encryption.isSelected()){
+                result = pc.encode(textToProcess);
+            } else {
+                result = pc.decode(textToProcess);
+            }
+
+            lblResult.setText("Result: " + result);
+        });
+
+        panels[0] = commonPanels[0];
+        panels[1] = commonPanels[1];
+        panels[2] = panelKey;
+        panels[3] = panelButton;
+
+        return panels;
+    }
+
 }
