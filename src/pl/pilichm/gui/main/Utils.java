@@ -489,7 +489,7 @@ public class Utils {
             String textToProcess = txtTextIn.getText();
             String result;
 
-            //pc.setKey(keyIn.getText());
+            pc.setKey(Utils.getKeyFromString(keyIn.getText()));
 
             if (encryption.isSelected()){
                 result = pc.encode(textToProcess);
