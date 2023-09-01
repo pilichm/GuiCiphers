@@ -110,7 +110,9 @@ public class Main {
         JButton btnTwoSquareCipher = new JButton("Two square");
         JButton btnFourSquareCipher = new JButton("Four square");
 
-        btnPlayfairCipher.addActionListener(e -> displayPlaifair());
+        btnPlayfairCipher.addActionListener(e -> displayPlayfair());
+        btnTwoSquareCipher.addActionListener(e -> displayTwoSquare());
+        btnFourSquareCipher.addActionListener(e -> displayFourSquare());
 
         listOfCiphersPanel.removeAll();
         listOfCiphersPanel.add(btnPlayfairCipher);
@@ -218,10 +220,38 @@ public class Main {
         refresh();
     }
 
-    private void displayPlaifair(){
+    private void displayPlayfair(){
         System.out.println("Playfair cipher.");
 
         JPanel [] panels = Utils.getPanelsForPlayfair();
+
+        cipherInputOutputPanel.removeAll();
+
+        for (JPanel panel : panels){
+            cipherInputOutputPanel.add(panel);
+        }
+
+        refresh();
+    }
+
+    private void displayFourSquare(){
+        System.out.println("Four square cipher.");
+
+        JPanel [] panels = Utils.getPanelsForFourSquare();
+
+        cipherInputOutputPanel.removeAll();
+
+        for (JPanel panel : panels){
+            cipherInputOutputPanel.add(panel);
+        }
+
+        refresh();
+    }
+
+    private void displayTwoSquare(){
+        System.out.println("Two square cipher.");
+
+        JPanel [] panels = Utils.getPanelsForTwoSquare();
 
         cipherInputOutputPanel.removeAll();
 

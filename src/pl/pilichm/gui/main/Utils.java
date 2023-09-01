@@ -1,6 +1,10 @@
 package pl.pilichm.gui.main;
 
+import pl.pilichm.ciphers.AbstractCipher;
+import pl.pilichm.ciphers.square.AbstractSquareCipher;
+import pl.pilichm.ciphers.square.FourSquareCipher;
 import pl.pilichm.ciphers.square.PlayfairCipher;
+import pl.pilichm.ciphers.square.TwoSquareCipher;
 import pl.pilichm.ciphers.substitution.*;
 import pl.pilichm.ciphers.transposition.ColumnarTranspositionCipher;
 import pl.pilichm.ciphers.transposition.RailFenceCipher;
@@ -467,9 +471,8 @@ public class Utils {
         return key;
     }
 
-    public static JPanel [] getPanelsForPlayfair() {
+    public static JPanel [] getPanelsForSquareCipher(AbstractSquareCipher asc) {
         JPanel [] panels = new JPanel[4];
-        PlayfairCipher pc = new PlayfairCipher();
         JPanel [] commonPanels = getPanelsCommonForCaesarAndROT13();
 
         JPanel panelKey = getPanelForKey("Key: ", "Playfair");
@@ -489,12 +492,12 @@ public class Utils {
             String textToProcess = txtTextIn.getText();
             String result;
 
-            pc.setKey(Utils.getKeyFromString(keyIn.getText()));
+            asc.setKey(Utils.getKeyFromString(keyIn.getText()));
 
             if (encryption.isSelected()){
-                result = pc.encode(textToProcess);
+                result = asc.encode(textToProcess);
             } else {
-                result = pc.decode(textToProcess);
+                result = asc.decode(textToProcess);
             }
 
             lblResult.setText("Result: " + result);
@@ -508,4 +511,15 @@ public class Utils {
         return panels;
     }
 
+    public static JPanel [] getPanelsForPlayfair() {
+        return getPanelsForSquareCipher(new PlayfairCipher());
+    }
+
+    public static JPanel [] getPanelsForTwoSquare() {
+        return getPanelsForSquareCipher(new TwoSquareCipher());
+    }
+
+    public static JPanel [] getPanelsForFourSquare() {
+        return getPanelsForSquareCipher(new FourSquareCipher());
+    }
 }
